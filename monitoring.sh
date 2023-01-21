@@ -7,6 +7,15 @@ DisTotal=$(df --total -h | grep total | awk '{printf "%d", $2}')
 DisUsage=$(df --total -h | grep total | awk '{printf "%d", $3}')
 CPU=$(top -n 1| grep '%Cpu' | awk '{printf "%s", $2 + $4 + $10 }')
 LastBoot=$(who -b | awk '{printf("%s %s\n", $3 , $4)}')
+LVM=""
+if [ -d "/etc/lvm" ]; then
+	LVM="yes"
+else
+	LVM="no"
+fi
+TCPcnx=$(ss -t | grep 'ESTAB' | wc -l)
+UserLog=$(who |cut -d" " -f1 | sort | uniq | wc -l)
+
 echo "#Architecture : "$(uname -a)
 echo "#CPU physical : "$(lscpu | grep Socket | awk '{print $2}')
 echo "#vCPU : "$(cat /proc/cpuinfo | grep processor |  wc -l )
@@ -14,3 +23,6 @@ printf "#Memory Usage : %s/%sMB (%.2f%%)\n" $MemAvail $MemTotal  $(($MemUsage*10
 printf "#Disk Usage : %d/%dGb (%.2f%%)\n" $DisAvail $DisTotal $((DisUsage*100/DisTotal))
 printf "#Cpu load : %s%%\n" $CPU
 printf "#Last boot: %s %s\n" $LastBoot
+printf "#Use LVM : %s\n" $LVM
+printf "#Connection TCP  %s ESTABLISHED\n" $TCPcnx
+printf "#User log: %s\n" $UserLog
