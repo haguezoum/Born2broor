@@ -15,6 +15,9 @@ else
 fi
 TCPcnx=$(ss -t | grep 'ESTAB' | wc -l)
 UserLog=$(who |cut -d" " -f1 | sort | uniq | wc -l)
+IP=$(hostname -I)
+MAC=$(cat /sys/class/net/enp0s3/address)
+SUDOcmd=$(journalctl _COMM=sudo -q | grep COMMAND |wc -l)
 
 echo "#Architecture : "$(uname -a)
 echo "#CPU physical : "$(lscpu | grep Socket | awk '{print $2}')
@@ -26,3 +29,4 @@ printf "#Last boot: %s %s\n" $LastBoot
 printf "#Use LVM : %s\n" $LVM
 printf "#Connection TCP  %s ESTABLISHED\n" $TCPcnx
 printf "#User log: %s\n" $UserLog
+printf "#Sudo : %s\n" $SUDOcmd
